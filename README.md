@@ -6,3 +6,6 @@
 
 2. crawl_specific_contents(Dart)
 #사업 보고서 6,8번 항목 가져오는 코드
+
+3. Final_crawl
+#보상 위원회가 설치 되어 있으면 1을 반환 
