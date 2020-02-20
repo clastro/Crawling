@@ -9,3 +9,6 @@
 
 3. Final_crawl
 #보상 위원회가 설치 되어 있으면 1을 반환 
+
+4. table_crawl
+#테이블로 되어 있는 html을 pandas 데이터프레임 형식으로 불러오는 방법
