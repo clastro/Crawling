@@ -1,0 +1,55 @@
+import pandas as pd
+import numpy as np
+import ast
+import pymysql
+import requests 
+from bs4 import BeautifulSoup 
+from datetime import datetime 
+import pandas as pd 
+
+conn  = pymysql.connect(host="host", port=3306,user="user",   
+                     passwd="1234",  
+                     db="dbname")  
+
+cursor = conn.cursor()
+conn.set_charset('utf8')
+
+#cursor.execute("show tables")
+
+cursor.execute("Select video_id FROM utube_video_info limit 10")
+#cursor.execute("desc utube_video_info")
+
+#item = cursor.fetchall()
+
+row = [item[0] for item in cursor.fetchall()] #Tuple 형태의 데이터를 List로 변환
+row
+
+url = 'https://www.youtube.com/watch?v='
+
+video_info = pd.DataFrame({'title':[],
+                          'duration':[],
+                          'comment':[]})
+for i in range(len(row)):
+    browser.get(url+row[i])
+    
+    body = browser.find_element_by_tag_name('body')
+    soup0 = browser.page_source
+    soup = BeautifulSoup(soup0,'html.parser')
+    
+    info1 = soup.find('div',{'id':'info-contents'})
+    info2 = soup.find('span',{'class':'ytp-time-duration'}).text
+    
+    try:
+        comment = soup.find_all('yt-formatted-string',{'id':'content-text'}).text
+    except:
+        comment = '댓글 없음'
+    title = info1.find('h1',{'class':'title style-scope ytd-video-primary-info-renderer'}).text
+    
+    insert_data = pd.DataFrame({'title':[title],
+                          'duration':[info2],
+                          'comment':[comment]})
+    
+    video_info = video_info.append(insert_data)
+    
+video_info.index = range(len(video_info))                      
+                  
