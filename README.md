@@ -20,5 +20,5 @@
 
 ## 유튜브 크롤링
 
-1. API 사용
-2. API 없이 Selenium
+1. API를 사용한 댓글 수집
+2. API 사용 없이 Selenium으로 댓글 수집하기
