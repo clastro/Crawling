@@ -1,0 +1,84 @@
+import pandas as pd
+import numpy as np
+import ast
+import pymysql
+import requests
+from bs4 import BeautifulSoup
+from datetime import datetime                                
+import time
+import datetime as dt
+import urllib.request
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.keys import Keys
+import json
+import re 
+from apiclient.errors import HttpError
+
+host = host서버
+port = 3306
+username = "ID"
+password = "PASS"
+db = "DB"
+
+conn  = pymysql.connect(host=host, port=port,user=username,passwd=password,db=db)  
+cursor = conn.cursor()
+conn.set_charset('utf8')
+cursor.execute("Select video_id FROM utube_video_info limit 2001, 3000")
+#item = cursor.fetchall()
+row = [item[0] for item in cursor.fetchall()]
+row
+
+url = 'https://www.youtube.com/watch?v='
+from googleapiclient.discovery import build
+api_key = '발급받은키' #data API v3
+youtube = build('youtube', 'v3', developerKey=api_key)
+
+df_youtube_comments = pd.DataFrame()
+
+def get_video_comments(video_id):
+    request = youtube.commentThreads().list(
+        videoId = video_id,
+        order = 'time',
+        part = 'id,snippet',
+        maxResults = 100
+    )
+    comments = []
+    IDs = []
+    video_ids = []
+    published_times = []
+    while request:
+        try:
+            global response
+            response = request.execute()
+        
+        except Exception as e:
+            print(e)
+            pass
+        else:      
+            for item in response['items']:
+                #reply_count = comment['snippet']['totalReplyCount']
+                ID = item['snippet']['topLevelComment']['snippet']['authorDisplayName']
+                IDs.append(ID)
+                comment = item['snippet']['topLevelComment']['snippet']['textDisplay']
+                comments.append(comment)
+                publishedAt = item['snippet']['topLevelComment']['snippet']['publishedAt']
+                published_times.append(publishedAt)
+                video_ids.append(video_id)
+
+        finally:
+            request = youtube.commentThreads().list_next(request, response)
+
+        
+    return comments,IDs,video_ids,published_times
+    
+    
+cnt = 0
+for video_id in row:
+    comments,ids,video_ids,published_times = get_video_comments(video_id)  
+    df = pd.DataFrame(list(zip(video_ids,ids,comments,published_times)),columns=['video_url','id','comments','time'])
+    df_youtube_comments = pd.concat([df,df_youtube_comments])
+    cnt += 1
+    if(cnt % 30 == 0):
+        print(str(cnt/30) + "% 완료") #확인하기
+    
