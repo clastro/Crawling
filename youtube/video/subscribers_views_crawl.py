@@ -43,6 +43,11 @@ for channel_id in tqdm(df_channel['channel_id']):
     soup = bs(response.html.html, "html.parser")
     data = re.search(r"var ytInitialData = ({.*?});", soup.find_all("script")[33].prettify()).group(1)
     data_json = json.loads(data)
+    
+    if 'alerts' in data_json:
+        if 'ERROR' in data_json['alerts'][0]['alertRenderer']['type']: #계정 해지 or 신고
+            continue
+            
     string_contain_views = str(pd.DataFrame(data_json)['contents']['twoColumnBrowseResultsRenderer']['tabs'])
     
     if '조회수' in string_contain_views:
