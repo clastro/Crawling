@@ -1,6 +1,8 @@
 ### 파일 설명
 
-Crawl_Youtube_video_info.py 
+1. Crawl_Youtube_video_info.py 
 
 API 없이 Youtube 영상의 기본 정보 (비디오 아이디, 채널 아이디, 제목, 제작일, 조회수, 태그, 상세정보, 썸네일, 영상 길이) + 추가 정보 (광고 여부, 좋아요 수) 크롤링
+
+
 
