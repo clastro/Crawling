@@ -30,12 +30,6 @@ for video_id in tqdm(df_list['video_id']): #video_list에 video_id가 담겨 있
         response = video_list.execute() # 리스트를 실행 하면 quota 1개가 줄어들면서 response를 받을 수 있다.
     except:
         key_idx += 1 #key의 index를 추가한다.
-        youtube = build('youtube', 'v3', developerKey=key_series[key_idx]) #api_key를 넣고 youtube data apiv3을 생성한다
-        video_list = youtube.videos().list(
-            part=['snippet','contentDetails','statistics'], #우리가 필요한 데이터는 snippet, contentDetails, statistics안에
-            id=video_id #id는 video_id 를 넣어준다
-        )
-        response = video_list.execute() #except 내에서도 403 quota 에러가 발생할 경우 대응하지 못함 (추후 변경 필요)
         continue #에러 발생시 다음 key로 넘어감
         
     df_res = pd.json_normalize(response) #response를 보기 좋게 parsing하는 pandas 함수
