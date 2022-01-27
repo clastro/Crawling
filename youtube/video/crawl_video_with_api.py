@@ -36,7 +36,7 @@ for video_id in tqdm(df_list['video_id']): #video_list에 video_id가 담겨 있
             id=video_id #id는 video_id 를 넣어준다
         )
         response = video_list.execute() #except 내에서도 403 quota 에러가 발생할 경우 대응하지 못함 (추후 변경 필요)
-        
+        continue #에러 발생시 다음 key로 넘어감
         
     df_res = pd.json_normalize(response) #response를 보기 좋게 parsing하는 pandas 함수
     if(df_res['pageInfo.totalResults'][0]>=1): #만약에 results가 있다면
