@@ -45,7 +45,7 @@ headers = {
 
 update_lists = []
 cnt = 0
-for video_id in tqdm(array_video_id[500000:800000]): #Video_ID 목록
+for video_id in tqdm(array_video_id): #Video_ID 목록
     cnt += 1
     result = {} #하나의 row에 담을 dictionary
     video_lists = []
